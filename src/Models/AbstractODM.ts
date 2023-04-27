@@ -20,7 +20,8 @@ abstract class AbstractODM<T> {
   }
 
   public async findById(id: string): Promise<T | null> {
-    return this.model.findById(id);
+    if (id) return this.model.findById(id);
+    return null;
   }
 
   public async update(_id: string, obj: T): Promise<T | null> {
