@@ -1,6 +1,8 @@
+import { isValidObjectId } from 'mongoose';
 import Motorcycle from '../Domains/Motorcycle';
 import IMotorcycle from '../Interfaces/IMotorcycle';
 import MotorcycleODM from '../Models/MotorcycleODM';
+import HttpException from '../Utils/HttpException';
 
 class MotorcycleService {
   private createMotorcycleDomain(motorcycle: IMotorcycle | null): Motorcycle | null {
@@ -14,6 +16,21 @@ class MotorcycleService {
     const motoModel = new MotorcycleODM();
     const newMotocycle = await motoModel.create(motorcycle);
     return this.createMotorcycleDomain(newMotocycle);
+  }
+
+  public async getAll() {
+    const motoModel = new MotorcycleODM();
+    const motoList = await motoModel.findAll();
+    const motoArray = motoList.map((moto) => this.createMotorcycleDomain(moto));
+    return motoArray;
+  }
+
+  public async getById(id: string) {
+    const motoModel = new MotorcycleODM();
+    if (!isValidObjectId(id)) throw new HttpException(422, 'Invalid mongo id');
+    const moto = await motoModel.findById(id);
+    if (!moto) throw new HttpException(404, 'Motorcycle not found');
+    return this.createMotorcycleDomain(moto);
   }
 }
 
