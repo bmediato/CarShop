@@ -37,12 +37,15 @@ describe('Rota /cars', function () {
       const result = await service.getAll();
       expect(result).to.be.deep.equal([newCar]);
     });
-    it('Retorna apenas o carro com id presente na URL', async function () {
+    it('Retorna com sucesso apenas o carro com id presente na URL', async function () {
       sinon.stub(Model, 'findById').resolves(newCar);
 
       const service = new CarService();
       const result = await service.getById('1');
       expect(result).to.be.deep.equal(newCar);
+    });
+    it('Retorna erro caso id passado não exista no banco', async function () {
+      sinon.stub(Model, 'findById');
     });
   });
   afterEach(function () {

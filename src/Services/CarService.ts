@@ -33,6 +33,17 @@ class CarService {
     return this.createCarDomain(car);
   }
   // validação do Id no mongoose https://mongoosejs.com/docs/api/mongoose.html#Mongoose.prototype.isValidObjectId() 
+
+  public async updateCar(id:string, car:ICar) {
+    const carModel = new CarODM();
+    if (!isValidObjectId(id)) throw new HttpException(422, 'Invalid mongo id');
+    const findCar = await carModel.findById(id);
+    if (findCar) {
+      const upDCar = await carModel.update(id, car);
+      return this.createCarDomain(upDCar);
+    }
+    throw new HttpException(404, 'Car not found');
+  }
 }
 
 export default CarService;
