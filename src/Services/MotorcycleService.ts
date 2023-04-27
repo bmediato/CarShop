@@ -32,6 +32,17 @@ class MotorcycleService {
     if (!moto) throw new HttpException(404, 'Motorcycle not found');
     return this.createMotorcycleDomain(moto);
   }
+
+  public async updateMoto(id: string, moto:IMotorcycle) {
+    const motoModel = new MotorcycleODM();
+    if (!isValidObjectId(id)) throw new HttpException(422, 'Invalid mongo id');
+    const findCar = await motoModel.findById(id);
+    if (findCar) {
+      const upDCar = await motoModel.update(id, moto);
+      return this.createMotorcycleDomain(upDCar);
+    }
+    throw new HttpException(404, 'Motorcycle not found');
+  }
 }
 
 export default MotorcycleService;
