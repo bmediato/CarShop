@@ -5,6 +5,12 @@ import CarODM from '../Models/CarODM';
 import HttpException from '../Utils/HttpException';
 
 class CarService {
+  private messageId: string;
+  private messageCar: string;
+  constructor() {
+    this.messageId = 'Invalid mongo id';
+    this.messageCar = 'Car not found';
+  }
   private createCarDomain(car: ICar | null): Car | null {
     if (car) {
       return new Car(car);
@@ -27,22 +33,33 @@ class CarService {
 
   public async getById(id: string) {
     const carModel = new CarODM();
-    if (!isValidObjectId(id)) throw new HttpException(422, 'Invalid mongo id');
+    if (!isValidObjectId(id)) throw new HttpException(422, this.messageId);
     const car = await carModel.findById(id);
-    if (!car) throw new HttpException(404, 'Car not found');
+    if (!car) throw new HttpException(404, this.messageCar);
     return this.createCarDomain(car);
   }
   // validação do Id no mongoose https://mongoosejs.com/docs/api/mongoose.html#Mongoose.prototype.isValidObjectId() 
 
   public async updateCar(id:string, car:ICar) {
     const carModel = new CarODM();
-    if (!isValidObjectId(id)) throw new HttpException(422, 'Invalid mongo id');
+    if (!isValidObjectId(id)) throw new HttpException(422, this.messageId);
     const findCar = await carModel.findById(id);
     if (findCar) {
       const upDCar = await carModel.update(id, car);
       return this.createCarDomain(upDCar);
     }
-    throw new HttpException(404, 'Car not found');
+    throw new HttpException(404, this.messageCar);
+  }
+
+  public async deleteCar(id: string) {
+    const carModel = new CarODM();
+    if (!isValidObjectId(id)) throw new HttpException(422, this.messageId);
+    const findCar = await carModel.findById(id);
+    if (findCar) {
+      const deleteCar = await carModel.delete(id);
+      return this.createCarDomain(deleteCar);
+    }
+    throw new HttpException(404, this.messageCar);
   }
 }
 

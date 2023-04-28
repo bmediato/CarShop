@@ -7,5 +7,9 @@ motoRoutes.post('/', (req, res, next) => new MotorcycleController(req, res, next
 motoRoutes.get('/', (req, res, next) => new MotorcycleController(req, res, next).getAll());
 motoRoutes.get('/:id', (req, res, next) => new MotorcycleController(req, res, next).getById());
 motoRoutes.put('/:id', (req, res, next) => new MotorcycleController(req, res, next).updateMoto());
+motoRoutes.delete(
+  '/:id', 
+  (req, res, next) => new MotorcycleController(req, res, next).deleteMotorcycle(),
+);
 
 export default motoRoutes;
